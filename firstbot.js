@@ -10,41 +10,45 @@ const CONVERSATION_API_BASE = 'https://driftapi.com/conversations'
 
 const TOKEN = 'EfV1DHwdnyg3DgP7DSCX6pwCMo8eKLKb'
 
-// const sequelize = new Sequelize(process.env.DATABASE_URL)
-//
-// sequelize
-//   .authenticate()
-//   .then(() => {
-//     console.log('Connection has been established successfully.');
-//   })
-//   .catch(err => {
-//     console.error('Unable to connect to the database:', err);
-//   });
-//
-//
-// const Conversation = sequelize.define('conversations', {
-//   id: {
-//     type: Sequelize.INTEGER,
-//     primaryKey: true,
-//   },
-//   status: {
-//     type: Sequelize.STRING
-//   },
-//   language: {
-//     type: Sequelize.STRING
-//   },
-//   first_seen_at: {
-//     type: Sequelize.INTEGER
-//   },
-//   first_seen_id: {
-//     type: Sequelize.INTEGER
-//   }
-// });
-//
-// // force: true will drop the table if it already exists
-// Conversation.sync({
-//   force: true
-// })
+//const DB_URL = 'postgres://unkgbaytvmtmim:dabcb3c53c61a002849ac80bdbc8e39736e43b3cc6d5f726b566c9e5baf37477@ec2-174-129-22-84.compute-1.amazonaws.com:5432/db76971qu5035q'
+
+const DB_URL = 'postgres://fsydipdpxvugni:509e79e6551da6578a7868d186971dd628c3d5d8423f68f21662a2d58f1a4016@ec2-107-20-224-137.compute-1.amazonaws.com:5432/d5gk1elivd1mpk'
+
+const sequelize = new Sequelize(DB_URL, {
+  dialect: 'postgres',
+  dialectOptions: {
+    ssl: true
+  }
+})
+
+sequelize
+  .authenticate()
+  .then(() => {
+    console.log('Connection has been established successfully.');
+  })
+  .catch(err => {
+    console.error('Unable to connect to the database:', err);
+  });
+
+
+const Conversations = sequelize.define('conversations', {
+  id: {
+    type: Sequelize.INTEGER,
+    primaryKey: true,
+  },
+  status: {
+    type: Sequelize.STRING
+  },
+  language: {
+    type: Sequelize.STRING
+  },
+  first_seen_at: {
+    type: Sequelize.INTEGER
+  },
+  first_seen_id: {
+    type: Sequelize.INTEGER
+  }
+});
 
 const categoryButtons = [
   {
