@@ -12,7 +12,7 @@ const TOKEN = 'EfV1DHwdnyg3DgP7DSCX6pwCMo8eKLKb'
 
 //const DB_URL = 'postgres://unkgbaytvmtmim:dabcb3c53c61a002849ac80bdbc8e39736e43b3cc6d5f726b566c9e5baf37477@ec2-174-129-22-84.compute-1.amazonaws.com:5432/db76971qu5035q'
 
-const DB_URL = 'postgres://unkgbaytvmtmim:dabcb3c53c61a002849ac80bdbc8e39736e43b3cc6d5f726b566c9e5baf37477@ec2-174-129-22-84.compute-1.amazonaws.com:5432/db76971qu5035q'
+const DB_URL = 'postgres://totdytfagojfrt:0129d1dd1d4631a6a47a340b41fdc71e39cddd476aa823cffb7a99372336ff5c@ec2-23-21-195-249.compute-1.amazonaws.com:5432/ddqnnljlncturp'
 
 const sequelize = new Sequelize(DB_URL, {
   dialect: 'postgres',
@@ -30,7 +30,7 @@ sequelize
     console.error('Unable to connect to the database:', err);
   });
 
-const Inquiry = sequelize.define('inquiries', {
+const Inquiry = sequelize.define('inquiry', {
   id: {
     type: Sequelize.INTEGER,
     primaryKey: true,
