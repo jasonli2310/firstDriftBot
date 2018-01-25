@@ -133,11 +133,11 @@ function makeNewInquiry(orgId, slashCommand, data) {
   const messageId = data.id
 
   console.log('newInquiry Ran')
-  return Inquiry.create({
+  Inquiry.create({
     id: messageId,
     conversationId: conversationId,
     orgId: orgId,
-    timeStamp: 555,
+    timeStamp: 888,
     slashCommand: slashCommand,
     issueContent: issueContent,
     issueCategory: 'other'
@@ -182,15 +182,14 @@ app.post('/', async(request, response) => {
      // console.log('orgId is' + orgId)
      // console.log('conversationId is ' + data.conversationId)
      // console.log('createdAt is '+ data.createdAt)
-     //newInquiry(456, 4567, 45678, 'howto', 'RUNNING FROM WITHIN')
-     //return sendMessage(orgId ,data.conversationId, "What category does this issue fall into?")
+     return sendMessage(orgId ,data.conversationId, "What category does this issue fall into?")
    }
  }
 
 if (type == 'button_action' && data.author.type == 'user'){
   console.log('issue category is '+ data.button.value)
   const updatedCategory = data.button.value
-  updatelastIssue(lastReferencedId, updatedCategory)
+  //updatelastIssue(lastReferencedId, updatedCategory)
 }
 
 })
