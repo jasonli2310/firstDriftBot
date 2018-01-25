@@ -12,7 +12,7 @@ const TOKEN = 'EfV1DHwdnyg3DgP7DSCX6pwCMo8eKLKb'
 
 //const DB_URL = 'postgres://unkgbaytvmtmim:dabcb3c53c61a002849ac80bdbc8e39736e43b3cc6d5f726b566c9e5baf37477@ec2-174-129-22-84.compute-1.amazonaws.com:5432/db76971qu5035q'
 
-const DB_URL = 'postgres://fsydipdpxvugni:509e79e6551da6578a7868d186971dd628c3d5d8423f68f21662a2d58f1a4016@ec2-107-20-224-137.compute-1.amazonaws.com:5432/d5gk1elivd1mpk'
+const DB_URL = 'postgres://unkgbaytvmtmim:dabcb3c53c61a002849ac80bdbc8e39736e43b3cc6d5f726b566c9e5baf37477@ec2-174-129-22-84.compute-1.amazonaws.com:5432/db76971qu5035q'
 
 const sequelize = new Sequelize(DB_URL, {
   dialect: 'postgres',
@@ -30,26 +30,36 @@ sequelize
     console.error('Unable to connect to the database:', err);
   });
 
-
-const Conversations = sequelize.define('conversations', {
+const Inquiry = sequelize.define('inquiries', {
   id: {
     type: Sequelize.INTEGER,
     primaryKey: true,
   },
-  status: {
-    type: Sequelize.STRING
+  conversationId: {
+    type: Sequelize.INTEGER,
   },
-  language: {
-    type: Sequelize.STRING
-  },
-  first_seen_at: {
+  orgId: {
     type: Sequelize.INTEGER
   },
-  first_seen_id: {
+  timeStamp: {
     type: Sequelize.INTEGER
+  },
+  slashCommand: {
+    type: Sequelize.STRING
+  },
+  issueContent: {
+    type: Sequelize.STRING
+  },
+  issueCategory: {
+    type: Sequelize.STRING
   }
 });
 
+
+//force: true will drop the table if it already exists
+// Inquiry.sync({
+//   force: true
+// })
 const categoryButtons = [
   {
     "label": 'Playbooks',
@@ -114,18 +124,78 @@ const categoryButtons = [
 
 ]
 
-// var responseMessage = {
-//   "id": 1,
-//   "orgId": 1,
-//   "body": 'string',
-//   "author": {
-//     "type": user
-//   },
-//   "type": "private_prompt",
-//   "conversationId": conversationId,
-//   "buttons": categoryButtons,
-// }
+//wrote it the old way for people to read
+function makeNewInquiry(orgId, slashCommand, data) {
+  const timeStamp = data.createdAt
+  const issueContent = data.body.replace('/howto ', '')
+  const issueCategory = 'howto'
+  const conversationId = data.conversationId
+  const messageId = data.id
 
+  console.log('newInquiry Ran')
+  return Inquiry.create({
+    id: messageId,
+    conversationId: conversationId,
+    orgId: orgId,
+    timeStamp: 555,
+    slashCommand: slashCommand,
+    issueContent: issueContent,
+    issueCategory: 'other'
+  }).catch(err => console.log(err))
+
+}
+
+function updatelastIssue(lastReferencedId, updatedCategory){
+  return Inquiry.findbyId(lastReferencedId)
+  .then(inquiry => {
+    inquiry.issueCategory = updatedCategory
+    return inquiry.save()
+  })
+}
+
+app.use(bodyParser.json());
+app.listen(process.env.PORT || 3000, () => console.log('Your first bot is listening on port 3000!'));
+
+// console.log(newInquiry(12345, 1234, 1234, 12345, 'howto', 'this is the issueContent'))
+
+let lastReferencedId = 0
+//shows it works on your public domain
+app.get('/', async(message, res) => { //message is the request, res is the response
+ return res.status(200).send('check it out!!')
+})
+
+app.post('/', async(request, response) => {
+ console.log(request.body);
+ const {data, type, orgId} = request.body;
+ if (!data) return response.send(400);
+
+ if (data.type == 'private_note' && data.author.type == 'user'){
+   console.log('noted')
+   if (data.body.startsWith('/howto')) {
+     const slashCommand = 'howto'
+     lastReferencedId = data.id
+     makeNewInquiry(orgId, slashCommand, data)
+
+     //run function to save inquiry into db
+     console.log(lastReferencedId + ' should match '+ data.id)
+     console.log('new message came in: ' + data.body)
+     // console.log('orgId is' + orgId)
+     // console.log('conversationId is ' + data.conversationId)
+     // console.log('createdAt is '+ data.createdAt)
+     //newInquiry(456, 4567, 45678, 'howto', 'RUNNING FROM WITHIN')
+     //return sendMessage(orgId ,data.conversationId, "What category does this issue fall into?")
+   }
+ }
+
+if (type == 'button_action' && data.author.type == 'user'){
+  console.log('issue category is '+ data.button.value)
+  const updatedCategory = data.button.value
+  updatelastIssue(lastReferencedId, updatedCategory)
+}
+
+})
+
+//bot responds to my slash command
 const sendMessage = (orgId, conversationId, message) => {
   return request.post(CONVERSATION_API_BASE + `/${conversationId}/messages`)
     .set('Content-Type', 'application/json')
@@ -133,31 +203,3 @@ const sendMessage = (orgId, conversationId, message) => {
     .send({body: message, orgId: orgId, type: 'private_prompt', buttons: categoryButtons})
     .catch(err => console.log(err))
 }
-
-app.use(bodyParser.json());
-app.listen(process.env.PORT || 3000, () => console.log('Your first bot is listening on port 3000!'));
-
-app.get('/', async(message, res) => { //message is the request, res is the response
- return res.status(200).send('check it out!!')
-})
-
-app.post('/', async(request, response) => {
- //console.log(request.body);
- const {data, type, orgId} = request.body;
- if (!data) return response.send(400);
-
- if (data.type == 'private_note' && data.author.type == 'user'){
-   console.log('noted')
-   if (data.body.startsWith('/howto')) {
-     const messageBody = data.body.replace('/howto ', '')
-     console.log('message is' + messageBody)
-     console.log('orgId is' + orgId)
-     return sendMessage(orgId ,data.conversationId, "What category does this issue fall into?")
-
-     // console.log('new message came in: ' + data.body)
-     // console.log('conversationId is ' + data.conversationId)
-     // console.log('created at ' + data.createdAt)
-
-   }
- }
-})
