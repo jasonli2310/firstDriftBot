@@ -30,7 +30,7 @@ sequelize
     console.error('Unable to connect to the database:', err);
   });
 
-const Inquiry = sequelize.define('inquiry', {
+const Inquiry = sequelize.define('inquiries', {
   id: {
     type: Sequelize.INTEGER,
     primaryKey: true,
@@ -146,7 +146,7 @@ function makeNewInquiry(orgId, slashCommand, data) {
 }
 
 function updatelastIssue(lastReferencedId, updatedCategory){
-  return Inquiry.findbyId(lastReferencedId)
+  return Inquiry.findById(lastReferencedId)
   .then(inquiry => {
     inquiry.issueCategory = updatedCategory
     return inquiry.save()
@@ -189,7 +189,7 @@ app.post('/', async(request, response) => {
 if (type == 'button_action' && data.author.type == 'user'){
   console.log('issue category is '+ data.button.value)
   const updatedCategory = data.button.value
-  //updatelastIssue(lastReferencedId, updatedCategory)
+  updatelastIssue(lastReferencedId, updatedCategory)
 }
 
 })
