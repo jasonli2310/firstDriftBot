@@ -13,5 +13,8 @@
     "pg": "^7.4.1",
     "sequelize": "^4.32.1",
     "superagent": "^3.8.2"
-  }
+  },
+  "scripts": {
+    "start": "node firstbot.js"
+}
 }
