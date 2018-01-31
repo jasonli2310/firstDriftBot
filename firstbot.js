@@ -90,7 +90,27 @@ const categoryButtons = [
     }
   },
   {
-    "label": 'Contacts',
+    "label": 'WidgetAPI/JavascriptSDK',
+    "value": 'api',
+    "type": 'action',
+    "style": 'primary',
+    "reaction": {
+      "type": 'replace',
+      "message": 'api and sdk -confirmed'
+    }
+  },
+  {
+    "label": 'Email/Sequences',
+    "value": 'email',
+    "type": 'compose',
+    "style": 'primary',
+    "reaction": {
+      "type": 'replace',
+      "message": 'other-confirmed'
+    }
+  },
+  {
+    "label": 'Calendar/Notifications/Routing',
     "value": 'contacts',
     "type": 'action',
     "style": 'primary',
@@ -100,13 +120,13 @@ const categoryButtons = [
     }
   },
   {
-    "label": 'WidgetAPI/JavascriptSDK',
-    "value": 'api',
+    "label": 'Contacts/Accounts',
+    "value": 'contacts',
     "type": 'action',
     "style": 'primary',
     "reaction": {
       "type": 'replace',
-      "message": 'api and sdk -confirmed'
+      "message": 'contacts-confirmed'
     }
   },
   {
