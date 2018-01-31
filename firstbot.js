@@ -102,11 +102,11 @@ const categoryButtons = [
   {
     "label": 'Email/Sequences',
     "value": 'email',
-    "type": 'compose',
+    "type": 'action',
     "style": 'primary',
     "reaction": {
       "type": 'replace',
-      "message": 'other-confirmed'
+      "message": 'email-confirmed'
     }
   },
   {
@@ -116,7 +116,7 @@ const categoryButtons = [
     "style": 'primary',
     "reaction": {
       "type": 'replace',
-      "message": 'contacts-confirmed'
+      "message": 'convocrew -confirmed'
     }
   },
   {
@@ -132,7 +132,7 @@ const categoryButtons = [
   {
     "label": 'Other',
     "value": 'other',
-    "type": 'compose',
+    "type": 'action',
     "style": 'primary',
     "reaction": {
       "type": 'replace',
